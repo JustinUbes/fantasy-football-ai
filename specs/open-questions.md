@@ -1,19 +1,79 @@
 # Open Questions
 
-## Product
+## Resolved Decisions
 
-- What is the first user-facing workflow?
-- What outputs should the analyst produce?
-- What level of personalization is required?
+| Decision | Choice | Notes |
+|---|---|---|
+| Sport focus | American football (NFL) | Explicit |
+| Backend language | Python | Explicit |
+| AI provider | OpenAI API | Explicit |
+| Cloud provider | Microsoft Azure | Explicit |
+| Domain registrar | Porkbun | Explicit |
+| Phase 1 fantasy platform | Sleeper | Best free API available |
+| Phase 1 NFL data | `nfl-data-py` | Free, Python-native, backed by nflverse |
+| Local dev database | SQLite | Zero cost, zero setup, schema mirrors production |
+
+---
+
+## Open — Require User Input
+
+### 1. Frontend Framework — **Decided: React.js**
+React.js chosen to keep the mobile path (React Native) open post-MVP. Backend API is served by FastAPI; the React app is a pure SPA deployed to Azure Static Web Apps.
+
+### 2. Hosting Shape for Python Backend
+**Options:**
+- **Azure Container Apps** — autoscaling, pay-per-use, managed containers; recommended for FastAPI
+- **Azure App Service** — simpler, flat pricing, good for predictable traffic
+- **Azure Functions** — true serverless, cheapest at low volume, but Python cold starts can be slow
+
+**Recommendation:** Azure Container Apps for the API + Azure Container Jobs for weekly data refresh cron work.
+
+### 3. User Authentication
+**Options:**
+- **Azure Entra External ID (B2C)** — free up to 50k MAU, stays entirely in Azure
+- **Clerk** — fastest dev experience, generous free tier, more opinionated
+- **Auth0** — mature, free to 7.5k MAU
+
+**Recommendation:** Clerk for development speed; migrate to Azure Entra External ID at scale if you want everything on one Azure bill.
+
+### 4. OpenAI Model Strategy
+**Options:**
+- `gpt-4o-mini` — very cheap (~$0.15/1M input tokens), strong reasoning for structured advice
+- `gpt-4o` — best quality, ~15x more expensive
+- Mixed — use mini for routine advice, gpt-4o for high-stakes moments (e.g. draft day)
+
+**Recommendation:** Start exclusively with `gpt-4o-mini`; add `gpt-4o` as a premium mode once you have real usage data to justify cost.
+
+### 5. ESPN Fantasy Integration
+ESPN has no official public API. Options:
+- Use the `espn-api` community library (cwendt94) — wraps internal endpoints, fragile to breakage
+- Reverse-engineer hidden endpoints directly (see docs/data-sources.md)
+- Skip ESPN Phase 1, prioritize Sleeper + Yahoo first
+
+**Recommendation:** Deprioritize ESPN until hidden endpoints are validated. Add Yahoo (OAuth2) in Phase 2.
+
+### 6. Analyst Ranking Data Source
+- Scrape FantasyPros consensus rankings as ground truth for analyst comparisons?
+- Pull individual writer predictions from blogs/social (requires LLM extraction pipeline)?
+
+**Needs your direction** — FantasyPros has ToS restrictions on scraping. Vegas lines (The Odds API) are a cleaner, legally safer option for calibration signals.
+
+### 7. Python Package Manager
+**Options:**
+- `uv` — modern, extremely fast, growing adoption
+- `poetry` — mature, widely used, lockfile support
+- `pip + requirements.txt` — simplest, universal
+
+**Recommendation:** `uv` — fastest-growing standard, works seamlessly with `pyproject.toml`.
+
+---
+
+## Product Scope (Confirmed)
+Outputs: who to draft, who to pick up, best lineup, who to drop, waiver wire advice, matchup-specific analysis, post-week reports.
+Users have accounts linked to their fantasy platforms.
+Focus: fantasy American football.
 
 ## Data
-Specifics about the data can be found in the /docs section of this repository. 
-- What historical and real-time inputs are needed?
-- What data can be stored locally versus fetched on demand?
-
-## Technical
-We will use OpenAI API for AI reasoning. At the current moment, I am thinking we will use a Python backend since we will be using AI and that seamlessly interacts with Python. We will also be doing data analysis of sports statistics, human analysis of sports and fantasy sports information. I have not decided on a front end, but React.js or Next.js will most likely be used for their amount of support and professional looking design. React.js could be a solid option because of React Native allowing for easy translation into a mobile app, but this will require further exploration and consideration.
-
-As far as infrastructure, we will use Microsoft Azure. We will use some sort of database offering so we can store user data and other necessary data for logic. We may even explore using embeddings, although the OpenAI API should offer embeddings. If we write the backend in Python, we will need a Python runtime which will have to be hosted on some sort of cloud offering (Kubernetes, VM, Azure Container Apps, etc.). The same will be true for our front end/website/app, we will need a Node runtime. Azure Networking services will be useful for configuring DNS and other aspects. Porkbun can be used to secure a domain when necessary.
-
-It would make the most sense to write the backend/business logic first, and get a robust product locally. We must consider cost at the current time since I am one person writing and paying for the app.
+See `/docs/data-sources.md` for identified sources.
+- **Open**: What historical depth is required? (2 seasons? 5 seasons? All available?)
+- **Decided**: Stats are consumed week-by-week. Fetch the current week on demand at query time; cache completed weeks locally so we never re-download finished data.
