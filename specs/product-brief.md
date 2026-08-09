@@ -2,7 +2,7 @@
 
 ## Vision
 
-An AI-powered fantasy sports analysis assistant would help users take their fantasy sports game up to the next level. It will act as a draft expert and an assistant throughout one's fantasy sports year, recommending lineup changes, pickups and whatever other useful information we find a useful use case for. The app will link with the users actual fantasy team either by fantasy app API or by user's manual addition for apps which do not have an API publicly exposed.
+An AI-powered fantasy sports analysis assistant would help users take their fantasy sports game up to the next level. It will act as a draft expert and an assistant throughout one's fantasy sports year, recommending lineup changes, pickups and whatever other useful information we find a useful use case for. The app will link with the users actual fantasy team either by fantasy app API or by user's manual addition for apps which do not have an API publicly exposed. I think we should focus on american football first.
 
 ## Target Users
 

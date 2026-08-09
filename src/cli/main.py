@@ -53,7 +53,7 @@ def fetch_stats(
     seasons: list[int] = typer.Argument(..., help="NFL seasons, e.g. 2022 2023 2024"),
 ) -> None:
     """Download NFL weekly stats from nflverse and print a summary."""
-    from src.data.nfl.stats import fetch_weekly_stats
+    from rag_nfl_analyst.data.nfl.stats import fetch_weekly_stats
 
     console.print(f"Fetching stats for seasons: {seasons} …")
     df = fetch_weekly_stats(seasons)
@@ -66,7 +66,7 @@ def sleeper_user(username: str = typer.Argument(..., help="Sleeper username")) -
     """Look up a Sleeper user and list their leagues."""
 
     async def _main() -> None:
-        from src.data.fantasy.sleeper import SleeperClient
+        from rag_nfl_analyst.data.fantasy.sleeper import SleeperClient
 
         async with SleeperClient() as client:
             user = await client.get_user(username)
