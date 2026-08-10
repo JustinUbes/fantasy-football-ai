@@ -66,6 +66,20 @@ ESPN has no official public API. Options:
 
 **Recommendation:** `uv` — fastest-growing standard, works seamlessly with `pyproject.toml`.
 
+### 8. Product Tiering: Weekly vs Instant Decisions
+Concept:
+- **Weekly mode**: baseline assistant behavior using scheduled refreshes and cached weekly context
+- **Instant mode**: premium chat experience for near-real-time decision support when users want immediate guidance
+
+Open decisions:
+- What freshness window qualifies as "instant" for paid users?
+- Which capabilities are weekly-only vs instant-tier (lineup, waivers, matchup, start/sit)?
+- How should usage and refresh limits be enforced per tier?
+
+Recommendation:
+- Launch with weekly mode for all users first.
+- Add instant mode as a paid convenience tier after local assistant and core seasonal flows are stable.
+
 ---
 
 ## Product Scope (Confirmed)

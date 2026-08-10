@@ -13,6 +13,20 @@
 
 ---
 
+## Milestone 1 — Personal Local Assistant (Immediate)
+
+**Goal**: Deliver a locally runnable personal fantasy assistant for the upcoming season.
+
+**Definition of done for this milestone**:
+- You can run the assistant locally from CLI.
+- It can use your own league context and return actionable weekly guidance.
+- Core flows are available for draft, lineup, waivers, matchup, and weekly report usage.
+- No cloud deployment is required for this milestone.
+
+This milestone takes priority over broader platform work and should guide near-term sequencing.
+
+---
+
 ## Phase 1 — Data Foundation (No Cost / Minimal Cost)
 
 **Goal**: Validate data quality and establish the data pipeline before any UI or cloud work.
@@ -101,11 +115,18 @@
 - Scheduled jobs (Azure Container Jobs) for weekly data refresh
 - Monitoring: Azure Monitor + Application Insights
 
+### 4.1 Service Tiering Concept (Future)
+- Establish a clear product split between:
+	- **Weekly assistant mode**: standard guidance based on scheduled data refreshes
+	- **Instant decision mode**: higher-tier chat experience that can pull fresher context for real-time decisions
+- Position instant mode as a premium convenience feature for users who want low-friction, in-the-moment decisions during the season
+- Keep this as a post-Milestone 1 concept; local personal assistant remains the immediate priority
+
 ---
 
 ## Current Focus
 
-**Phase 1.1–1.3** — Data pipeline and Sleeper client, local SQLite storage, no cloud spend.
+**Milestone 1 + Phase 1.1–1.3** — Personal local assistant readiness, data pipeline and Sleeper client, local SQLite storage, no cloud spend.
 
 ## Deferred Decisions
 
@@ -113,3 +134,4 @@
 - Azure hosting shape: Container Apps vs. App Service vs. Functions
 - Whether to add embeddings (pgvector) for analyst semantic search
 - Mobile app via React Native (post-MVP)
+- Subscription packaging for **weekly vs instant decision support** and how real-time refresh limits should map to paid tiers

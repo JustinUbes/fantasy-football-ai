@@ -66,7 +66,7 @@ def sleeper_user(username: str = typer.Argument(..., help="Sleeper username")) -
     """Look up a Sleeper user and list their leagues."""
 
     async def _main() -> None:
-        from rag_nfl_analyst.data.fantasy.sleeper import SleeperClient
+        from src.data.fantasy.sleeper import SleeperClient
 
         async with SleeperClient() as client:
             user = await client.get_user(username)
